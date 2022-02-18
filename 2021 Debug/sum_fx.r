@@ -44,7 +44,7 @@ sum_fx<- function(adj_matrix,
 # then called in by graph.and.data.setup.for.DCI.r.
 
     # why is 'lengths' used as a function param if it's declared again here -GO, 2020
-    lengths<-read.csv("length.csv")
+    lengths<-read_csv("length.csv")
 
     x2<-NULL #section start
     y2<-NULL #section end
