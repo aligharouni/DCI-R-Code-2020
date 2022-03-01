@@ -13,7 +13,7 @@
     # "Pass","Bar_ID","Seg_ID","nat_barrier"
     # 0.5,55152,"55152_s",FALSE
 
-    # Output: segments_and_barriers.csv with colu,ns: "passability", 
+    # Output: segments_and_barriers.csv with columns: "passability", 
     #   "barrier id", "segment 1 (start)", "segment 2 (end)", "nat_barrier",
     #   "section 1.2" (binding segment 1 and segment 2 - for use in another function)
     #

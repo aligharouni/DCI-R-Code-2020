@@ -81,7 +81,7 @@ FIPEX_output_to_R_input<-function(){
 
     # change the col names  
     barrier_info$barrier<-barrier_info$BarrierID
-    barrier_info$pass<-barrier_info$BarrierPerm
+    barrier_info$pass<-barrier_info$BarrierPerm ## Ali: this is the passibility
 
     res2<-NULL
 

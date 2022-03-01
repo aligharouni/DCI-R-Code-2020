@@ -9,13 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## FIPEX machinary
 
-
+- test
+- test2
 ```{r cars}
 summary(cars)
 ```
 
-## Including Plots
 
 

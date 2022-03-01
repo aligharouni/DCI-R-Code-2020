@@ -24,9 +24,13 @@
     #segment in the first column (Seg_ID), the second column (Seg) gives the id 
     #of other sections it touches, including itself.
 
-get_adj_matrix_from_gis<-function(){
+## Ali: take the "segment_matrix.csv" as the input to this function
+# output file name is given
+get_adj_matrix_from_gis<-function(inputname="segment_matrix.csv",
+                                  outputname="adjacency_matrix.csv"){
 
-    segment_matrix=read.csv("segment_matrix.csv")
+    # segment_matrix=read.csv("segment_matrix.csv")
+    segment_matrix <- read.csv(inputname)
     # obtain the segments in whatever order they are in the file
     segments<-with(segment_matrix, unique(Seg_ID))
 
@@ -55,8 +59,11 @@ get_adj_matrix_from_gis<-function(){
         adj_matrix[row,col]<-1
     }
 
+    # write.table(adj_matrix,
+    #             "adjacency_matrix.csv",
+    #             row.names=F, sep=",")
     write.table(adj_matrix,
-                "adjacency_matrix.csv",
+                outputname,
                 row.names=F, sep=",")
 
     # Old Note
