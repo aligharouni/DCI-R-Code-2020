@@ -50,6 +50,8 @@ adj_matrix<-get_adj_matrix_from_gis(inputname="segment_matrix_ali.csv",
 ## Let's construct the barrier_ali.csv file
 #  Q: I think, in the FIPEX_output_to_R_input.r (lines 100-110) when constructing the barrier.csv,
 # in the column Seg_ID the upstream is first and the downstream seg is the 2nd, but the Pass is the same. Can we change this Pass?
+# segments_and_barriers.csv is only set from upstream to downstream
+#  segments_and_barriers.csv created in convert_gis_output_to_r_format.r
 
 segments_and_barriers_ali <- read.csv(sep="|", strip.white=TRUE,
                                       text="
@@ -63,7 +65,6 @@ Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
 
 
 # passability<-read.csv("segments_and_barriers.csv")
-
 passability<-segments_and_barriers_ali
 
 # lengths<-read_csv("length.csv")

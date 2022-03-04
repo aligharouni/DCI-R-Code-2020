@@ -11,11 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## FIPEX machinary
 
-- test
-- test2
-```{r cars}
-summary(cars)
-```
-
-
+[Greig Oldford Github](https://github.com/goldford?tab=repositories)
+[Repo: The codes for calculatin the DCI](https://github.com/goldford/DCI-R-Code-2020)
 
