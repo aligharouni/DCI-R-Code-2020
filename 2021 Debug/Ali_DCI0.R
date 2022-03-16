@@ -56,9 +56,9 @@ adj_matrix<-get_adj_matrix_from_gis(inputname="segment_matrix_ali.csv",
 segments_and_barriers_ali <- read.csv(sep="|", strip.white=TRUE,
                                       text="
 Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
-2|2_s|sink|0.7|FALSE|2_s,sink
-2|sink|2_s|0.5|FALSE|sink,2_s
-3|3_s|sink|0.7|FALSE|3_s,sink
+2|2_s|sink|0.5|FALSE|2_s,sink
+2|sink|2_s|0.8|FALSE|sink,2_s
+3|3_s|sink|0.5|FALSE|3_s,sink
 3|sink|3_s|0.5|FALSE|sink,3_s
 ") ## see metapop_params.R 
 
@@ -86,6 +86,33 @@ sink, 2
 
 # # debugonce(sum_fx)
 sum_table <- sum_fx(adj_matrix,passability,lengths)
+
+# Ali: adding a column to amount for d_ij distance along a path
+
+library(tidyverse)
+# total_length <- as.numeric(lengths %>% filter(Seg_ID %in% path) %>% summarise(sum(Shape_Length)))
+
+# This fun returns the cummulative usm of the lengths of a given path by looking up the segments from lengths df
+cumlength <- function(lengths, path){
+  # length is a df with columns: Seg_ID, Shape_Length
+  # path is a string of "seg1,seg2,...,segn"
+  o <-as.numeric(lengths 
+                 %>% filter(Seg_ID %in% unlist(strsplit(path,","))  ) 
+                 %>% summarise(sum(Shape_Length)))
+  return(o)
+}
+# test it:
+cumlength(lengths,sum_table$path2[6])
+
+ 
+cum_length <- apply(sum_table %>% select(path2), 1, FUN = function(par) cumlength(lengths,par))
+
+sum_table<- (sum_table  %>% mutate(cum_length=cum_length))
+
+write.csv(sum_table, file="sum_table_ali.csv", row.names=F)
+
+# Note, (i) not reading one of the directions, (is the input the product of passability? or in the process they) in the code the are just picking the first passability.
+# 
 
 DCI_test <- dci_calc_fx(sum_table,lengths,all_sections=F)
 # result: DCIp=75.33333 DCId=80

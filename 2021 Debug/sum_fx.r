@@ -105,6 +105,10 @@ sum_fx<- function(adj_matrix,
 
                 start_section<-path[1]
                 #this should grab the 1st segment of the path
+                # library(tidyverse)
+                # # Ali
+                # total_length <- as.numeric(lengths %>% filter(Seg_ID %in% path) %>% summarise(sum(Shape_Length)))
+                
                 
                 finish_section<-path[path_length]
                 #this should grab the last segment of the path
@@ -170,7 +174,8 @@ sum_fx<- function(adj_matrix,
                              barrier_id, 
                              pathway_pass, 
                              start_section_length, 
-                             finish_section_length)
+                             finish_section_length
+                             )
             sum_table<-as.data.frame(sum_table)
             sum_table$pathway_pass<-as.numeric(as.character(sum_table$pathway_pass))
             sum_table$start_section_length<-as.numeric(as.character(sum_table$start_section_length))
@@ -214,7 +219,8 @@ sum_fx<- function(adj_matrix,
                               barrier_id,
                               pathway_pass,
                               start_section_length,
-                              finish_section_length)
+                              finish_section_length
+                              )
     }
 
 #print("sum table")
