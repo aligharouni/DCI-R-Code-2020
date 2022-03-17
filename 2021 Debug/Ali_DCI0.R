@@ -53,13 +53,15 @@ adj_matrix<-get_adj_matrix_from_gis(inputname="segment_matrix_ali.csv",
 # segments_and_barriers.csv is only set from upstream to downstream
 #  segments_and_barriers.csv created in convert_gis_output_to_r_format.r
 
+(0.5*0.7)
+
 segments_and_barriers_ali <- read.csv(sep="|", strip.white=TRUE,
                                       text="
 Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
-2|2_s|sink|0.5|FALSE|2_s,sink
-2|sink|2_s|0.8|FALSE|sink,2_s
-3|3_s|sink|0.5|FALSE|3_s,sink
-3|sink|3_s|0.5|FALSE|sink,3_s
+2|2_s|sink|0.35|FALSE|2_s,sink
+2|sink|2_s|0.35|FALSE|sink,2_s
+3|3_s|sink|0.35|FALSE|3_s,sink
+3|sink|3_s|0.35|FALSE|sink,3_s
 ") ## see metapop_params.R 
 
 
@@ -109,7 +111,8 @@ cum_length <- apply(sum_table %>% select(path2), 1, FUN = function(par) cumlengt
 
 sum_table<- (sum_table  %>% mutate(cum_length=cum_length))
 
-write.csv(sum_table, file="sum_table_ali.csv", row.names=F)
+write.table(sum_table,file="sum_table_toy1.csv")
+# write.csv(sum_table, file="sum_table_toy1.csv", row.names=F)
 
 # Note, (i) not reading one of the directions, (is the input the product of passability? or in the process they) in the code the are just picking the first passability.
 # 
