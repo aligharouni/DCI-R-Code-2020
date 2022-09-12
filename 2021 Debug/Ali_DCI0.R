@@ -2,6 +2,11 @@
 #  reading the fowchar of the functions,
 library(tidyverse)
 ## used in sum_fx.r for "graphAM" object
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+# BiocManager::install("Rgraphviz")
+# BiocManager::install("RBGL")
 library(Rgraphviz)
 library(RBGL)
 
@@ -53,8 +58,6 @@ adj_matrix<-get_adj_matrix_from_gis(inputname="segment_matrix_ali.csv",
 # segments_and_barriers.csv is only set from upstream to downstream
 #  segments_and_barriers.csv created in convert_gis_output_to_r_format.r
 
-(0.5*0.7)
-
 segments_and_barriers_ali <- read.csv(sep="|", strip.white=TRUE,
                                       text="
 Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
@@ -79,6 +82,7 @@ sink, 2
 ")
 
 
+
 # # output: graph of system
 # dirgraph<-graph_fx(edge_size=75,
 #          node_size=5,
@@ -91,7 +95,6 @@ sum_table <- sum_fx(adj_matrix,passability,lengths)
 
 # Ali: adding a column to amount for d_ij distance along a path
 
-library(tidyverse)
 # total_length <- as.numeric(lengths %>% filter(Seg_ID %in% path) %>% summarise(sum(Shape_Length)))
 
 # This fun returns the cummulative usm of the lengths of a given path by looking up the segments from lengths df
@@ -130,3 +133,20 @@ DCI_test <- dci_calc_fx(sum_table,lengths,all_sections=F)
 
 # Step 4? adding natural barrier;
 summary_table_all <- graph_and_data_setup_for_DCI(adj_matrix,passability,lengths)
+
+
+
+
+# 7 node binary tree  -----------------------------------------------------
+
+# Ali: I took the binary tree approach in Jul 2022, using igraph package
+#  See "/home/ag/projects/connectivity/scripts/graphData.R"
+adj_matrix2<-get_adj_matrix_from_gis(inputname="segment_matrix_igraph_ali.csv",
+                                     outputname="adj_matrix_igraph_ali.csv")
+lengths2 <- read.csv("length2_ali.csv", stringsAsFactors = FALSE)
+passability2 <- read.csv("segments_and_barriers2_ali.csv", stringsAsFactors = FALSE)
+sum_table2 <- sum_fx(adj_matrix2,passability2,lengths2)
+dci <- dci_calc_fx(sum_table2,lengths2,all_sections=F)
+
+graph_and_data_setup_for_DCI(adj_matrix2,passability2,lengths2)
+
