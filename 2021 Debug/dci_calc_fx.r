@@ -124,7 +124,7 @@ dci_calc_fx<-function(sum_table,
 
     } # end if statement over all.sections
 
-    print(DCI)
+    # print(DCI)
 
     #write.table(DCI,"DCI.csv", row.names=F, sep=",")
 
