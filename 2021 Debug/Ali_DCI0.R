@@ -2,8 +2,7 @@
 #  reading the fowchar of the functions,
 library(tidyverse)
 ## used in sum_fx.r for "graphAM" object
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE))  install.packages("BiocManager")
 
 # BiocManager::install("Rgraphviz")
 # BiocManager::install("RBGL")
@@ -106,13 +105,37 @@ cumlength <- function(lengths, path){
                  %>% summarise(sum(Shape_Length)))
   return(o)
 }
+
+cumlength2 <- function(lengths, path){
+  # length is a df with columns: Seg_ID, Shape_Length
+  # path is a string of "seg1,seg2,...,segn"
+  o <-as.numeric(lengths 
+                 %>% filter(Seg_ID %in% unlist(strsplit(path,","))  ) 
+                 ## the central lengths are added 
+                 %>% summarise(sum(Shape_Length)-0.5*(Shape_Length[1]+Shape_Length[length(Shape_Length)]))
+                 )
+  return(o)
+}
+
 # test it:
 cumlength(lengths,sum_table$path2[6])
+# eg
+path <- sum_table$path2[6]
+lengths 
+as.numeric(lengths 
+  %>% filter(Seg_ID %in% unlist(strsplit(path,","))  )
+  %>% summarise(sum(Shape_Length)-0.5*(Shape_Length[1]+Shape_Length[length(Shape_Length)]))
+)
+
 
  
 cum_length <- apply(sum_table %>% select(path2), 1, FUN = function(par) cumlength(lengths,par))
-
 sum_table<- (sum_table  %>% mutate(cum_length=cum_length))
+
+cum_length2 <- apply(sum_table %>% select(path2), 1, FUN = function(par) cumlength2(lengths,par))
+sum_table<- (sum_table  %>% mutate(cum_length2=cum_length2))
+
+
 
 write.table(sum_table,file="sum_table_toy1.csv")
 # write.csv(sum_table, file="sum_table_toy1.csv", row.names=F)
