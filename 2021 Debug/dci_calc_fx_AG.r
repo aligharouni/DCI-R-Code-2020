@@ -25,7 +25,7 @@
 
 dci_calc_fx_AG<-function(sum_table,
                       lengths,
-                      all_sections=F){
+                      all_sections=FALSE){
   # Ali:: Sep 12, 2022. output a list of dci_p dci_d, and all sectional dci_s
 
     # Old Notes
@@ -65,58 +65,73 @@ dci_calc_fx_AG<-function(sum_table,
 
         lj<-sum_table$start_section_length[k]/sum(lengths$Shape_Length)
         lk<-sum_table$finish_section_length[k]/sum(lengths$Shape_Length)
-        pass<-sum_table$pathway_pass[k]
+        ## reverse path to find the reverse cumulative passabilities for calculating c_ij in DCI
+        reverse_path<-paste(rev(c(unlist(strsplit(sum_table$path2[k],split = ",")))) ,collapse=(","))
+        
+        passF<-sum_table$pathway_pass[k] ##cumulative passabilities in Forward direction
+        passB<-sum_table$pathway_pass[match(reverse_path, sum_table$path2)]  ##cumulative passabilities in Backward direction
+        pass<-passF*passB
+        # print(c(passF,passB,pass))
         DCIp<-DCIp+lj*lk*pass*100
     
         #add DCIp at the beginning to keep a running total of DCIp values
     }
 
     #DCId calculation
-    for (a in 1:dim(d_nrows)[1]){
-        # Old notes:
-        #to get the DCI for diadromous fish, use the following formula: 
-        # DCId= li/L*Cj (where j= the product of the passability in the pathway)
-        
-        la<-d_sum_table$finish_section_length[a]/sum(lengths$Shape_Length)
-        pass_d<-d_sum_table$pathway_pass[a]
-        DCId<-DCId+la*pass_d*100
-    }
+    # for (a in 1:dim(d_nrows)[1]){
+    #     # Old notes:
+    #     #to get the DCI for diadromous fish, use the following formula: 
+    #     # DCId= li/L*Cj (where j= the product of the passability in the pathway)
+    #     
+    #     la<-d_sum_table$finish_section_length[a]/sum(lengths$Shape_Length)
+    #     pass_d<-d_sum_table$pathway_pass[a]
+    #     DCId<-DCId+la*pass_d*100
+    # }
 
-    DCI<-t(c(DCIp,DCId))
+    DCI<- t(c(DCIp))##t(c(DCIp,DCId))
     DCI<-as.data.frame(DCI)	
 
-    names(DCI)<-c("DCIp","DCId")
+    names(DCI)<-c("DCIp") ##c("DCIp","DCId")
     
     # Old notes
     #########  ALL SECTION ANLAYSIS  ######
     ## if desired, one can calculate the DCI_d starting with every sections.  This
     ## gives a "section-level" DCI score for each section in the watershed
+    res<-NULL
     if(all_sections==T){
         sections<-as.vector(unique(sum_table$start))
         # store the all section results in DCI.as
         DCI_as<-NULL
         
+
         for(s in 1:length(sections)){
             DCI_s<-0
             # Old notes:
-            # select out only the data that corresponds to pathways from one sectino 
+            # select out only the data that corresponds to pathways from one sectino
             # to all other sections
             d_nrows<-subset(sum_table, start==sections[s])
             d_sum_table<-d_nrows
-            
+
             for (a in 1:dim(d_nrows)[1]){
                 # Old note:
-                #to get the DCI for diadromous fish, use the following formula: 
+                #to get the DCI for diadromous fish, use the following formula:
                 # DCId= li/L*Cj (where j= the product of the passability in the pathway)
                 la<-d_sum_table$finish_section_length[a]/sum(lengths$Shape_Length)
-                pass_d<-d_sum_table$pathway_pass[a]
+                
+                pass_F<-d_sum_table$pathway_pass[a] ##cumulative passabilities in Forward direction (this was pass_d, AG changed to pass_F)
+                ## AG:
+                reverse_path<-paste(rev(c(unlist(strsplit(sum_table$path2[a],split = ",")))) ,collapse=(","))
+                passB<-sum_table$pathway_pass[match(reverse_path, sum_table$path2)]  ##cumulative passabilities in Backward direction
+                pass_d<-pass_F*passB
+                ## AG:
                 DCI_s<-round(DCI_s+la*pass_d*100, digits=2)
-            } # end loop over sections for dci calc
-        
+                } # end loop over sections for dci calc
+
             DCI_as[s]<-DCI_s
-        } # end loop over "first" sections	
+        } # end loop over "first" sections
 
         # STORE RESULTS IN .CSV file
+        # print(c(sections,DCI_as))
         res<-data.frame(sections,DCI_as)
         # Ali:: I am running this func on a list of samples
         # write.table(x=res,
@@ -130,9 +145,11 @@ dci_calc_fx_AG<-function(sum_table,
 
     #write.table(DCI,"DCI.csv", row.names=F, sep=",")
 
+    # return(list(DCI,res)) ## AG, 22 Mar 2023 old one.
     return(list(DCI,res))
     # Old note:
-    #returns the results (but you can't do anything after this, so "return" 
+    #returns the results (but you can't do anything after this, so "return"
     # must always be at the end of a function)
+    # return(DCI)
 
 }
