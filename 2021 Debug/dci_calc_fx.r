@@ -90,6 +90,7 @@ dci_calc_fx<-function(sum_table,
     #########  ALL SECTION ANLAYSIS  ######
     ## if desired, one can calculate the DCI_d starting with every sections.  This
     ## gives a "section-level" DCI score for each section in the watershed
+    res<-NULL
     if(all_sections==T){
         sections<-as.vector(unique(sum_table$start))
         # store the all section results in DCI.as
@@ -117,10 +118,10 @@ dci_calc_fx<-function(sum_table,
 
         # STORE RESULTS IN .CSV file
         res<-data.frame(sections,DCI_as)
-        write.table(x=res,
-                file="DCI_all_sections.csv",
-                sep=",",
-                row.names=F)
+        # write.table(x=res,
+        #         file="DCI_all_sections.csv",
+        #         sep=",",
+        #         row.names=F)
 
     } # end if statement over all.sections
 
@@ -128,7 +129,7 @@ dci_calc_fx<-function(sum_table,
 
     #write.table(DCI,"DCI.csv", row.names=F, sep=",")
 
-    return(DCI)
+    return(list(DCI,res))
     # Old note:
     #returns the results (but you can't do anything after this, so "return" 
     # must always be at the end of a function)

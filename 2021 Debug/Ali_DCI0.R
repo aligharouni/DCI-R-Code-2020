@@ -26,7 +26,7 @@ source("dci_calc_fx_AG.r") ## Ali's version of DCI calc with directed passabilit
 #The input is the segment matrix, which is really two vectors. For each 
 #segment in the first column (Seg_ID), the second column (Seg) gives the id 
 #of other sections it touches, including itself.
-adj_matrix<-get_adj_matrix_from_gis()
+# adj_matrix<-get_adj_matrix_from_gis()
 
 ################################################################################
 # 3-node example:
@@ -68,27 +68,33 @@ segments_and_barriers_ali <- read.csv(sep="|", strip.white=TRUE,
 Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
 2|2_s|sink|0.1|FALSE|2_s,sink
 2|sink|2_s|0.1|FALSE|sink,2_s
-3|3_s|sink|0.2|FALSE|3_s,sink
-3|sink|3_s|0.2|FALSE|sink,3_s
+3|3_s|sink|0.5|FALSE|3_s,sink
+3|sink|3_s|0.5|FALSE|sink,3_s
 ") ## see metapop_params.R 
+
+# lengths<-read_csv("length.csv")
+lengths <- read.csv(sep=",", strip.white=TRUE, text="
+Seg_ID, Shape_Length
+sink, 1
+2_s, 2
+3_s, 3
+")
+
+passability<-segments_and_barriers_ali
+sum_table <- sum_fx(adj_matrix=adj_matrix,passability=passability,lengths=lengths)
+## Calculate the DCIs for the directed network:
+# dci_calc_fx(sum_table = sum_table,lengths = lengths,all_sections=F)
+dci_calc_fx(sum_table = sum_table,lengths = lengths,all_sections=T)
+
 
 ###############################################################################
 ## Example 2. Asymmetric network with 3 nodes
 ## AG:: the upstream, downstream should be appear here in the Bar_ID
 
-segment_matrix_ali3 <- read.csv(sep=",", strip.white=TRUE,
-                               text="
-         Seg_ID, Seg
-         sink, sink
-         sink, 2_s
-         sink, 3_s
-         2_s, 2_s
-         2_s, sink
-         3_s, 3_s
-         3_s, sink
-         ")
-write.table(segment_matrix_ali3,"segment_matrix_ali3.csv",
-            row.names=F, sep=",")
+segment_matrix_ali3 <- segment_matrix_ali
+
+# write.table(segment_matrix_ali3,"segment_matrix_ali3.csv",
+#             row.names=F, sep=",")
 
 adj_matrix3<-get_adj_matrix_from_gis(inputname="segment_matrix_ali3.csv",
                                     outputname="adj_matrix_ali3.csv")
@@ -102,18 +108,11 @@ Bar_ID|Seg_1|Seg_2|Pass|nat_barrier|section1_2
 3u|sink|3_s|0.5|FALSE|sink,3_s
 ") ## see metapop_params.R 
 
-# lengths<-read_csv("length.csv")
-lengths3 <- read.csv(sep=",", strip.white=TRUE, text="
-Seg_ID, Shape_Length
-sink, 1
-2_s, 2
-3_s, 3
-")
-
+lengths3 <- lengths
 passability_Asym3<-segments_and_barriers_ali_Asym3
+
 sum_table3 <- sum_fx(adj_matrix=adj_matrix3,passability=passability_Asym3,lengths=lengths3)
 ## Calculate the DCIs for the directed network:
-dci_calc_fx(sum_table = sum_table3,lengths = lengths3,all_sections=F)
 dci_calc_fx_AG(sum_table = sum_table3,lengths = lengths3,all_sections=F)
 dci_calc_fx_AG(sum_table = sum_table3,lengths = lengths3,all_sections=T)
 ###############################################################################

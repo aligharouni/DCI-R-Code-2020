@@ -97,7 +97,7 @@ dci_calc_fx_AG<-function(sum_table,
     #########  ALL SECTION ANLAYSIS  ######
     ## if desired, one can calculate the DCI_d starting with every sections.  This
     ## gives a "section-level" DCI score for each section in the watershed
-    res<-NULL
+    res<-NULL ## AG added
     if(all_sections==T){
         sections<-as.vector(unique(sum_table$start))
         # store the all section results in DCI.as
@@ -117,12 +117,12 @@ dci_calc_fx_AG<-function(sum_table,
                 #to get the DCI for diadromous fish, use the following formula:
                 # DCId= li/L*Cj (where j= the product of the passability in the pathway)
                 la<-d_sum_table$finish_section_length[a]/sum(lengths$Shape_Length)
-                
+                pass_F<-NULL;pass_B<-NULL;reverse_path<-NULL;
                 pass_F<-d_sum_table$pathway_pass[a] ##cumulative passabilities in Forward direction (this was pass_d, AG changed to pass_F)
                 ## AG:
-                reverse_path<-paste(rev(c(unlist(strsplit(sum_table$path2[a],split = ",")))) ,collapse=(","))
-                passB<-sum_table$pathway_pass[match(reverse_path, sum_table$path2)]  ##cumulative passabilities in Backward direction
-                pass_d<-pass_F*passB
+                reverse_path<-paste(rev(c(unlist(strsplit(d_sum_table$path2[a],split = ",")))) ,collapse=(","))
+                pass_B<-sum_table$pathway_pass[match(reverse_path, sum_table$path2)]  ##cumulative passabilities in Backward direction
+                pass_d<-pass_F*pass_B
                 ## AG:
                 DCI_s<-round(DCI_s+la*pass_d*100, digits=2)
                 } # end loop over sections for dci calc
