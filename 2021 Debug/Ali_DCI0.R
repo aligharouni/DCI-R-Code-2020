@@ -268,3 +268,57 @@ dci <- dci_calc_fx(sum_table2,lengths2,all_sections=F)
 
 graph_and_data_setup_for_DCI(adj_matrix2,passability2,lengths2)
 
+#--------------------------------------------------------------------------
+# Randimed sample from connectivity/scripts/netwSim_DataDir.R
+
+## Directionless sample: linear_3_1
+# lengths<-read_csv("length.csv")
+lengths.in <- read.csv(sep=",", strip.white=TRUE, text="
+Seg_ID, Shape_Length
+sink, 0.2735782
+2_s, 0.3994519
+3_s, 0.3269699
+")
+
+sum_table.in<- read.csv(sep=" ", strip.white=TRUE, text= "
+start end path2 barrier_id pathway_pass start_section_length finish_section_length cum_length
+2_s 2_s 2_s NA 1.000000000 0.3994519 0.3994519 0.0000000
+2_s 3_s 2_s,3_s 3 0.554699885 0.3994519 0.3269699 0.3632109
+2_s sink 2_s,sink 2 0.009998980 0.3994519 0.2735782 0.3365151
+3_s 2_s 3_s,2_s 3 0.554699885 0.3269699 0.3994519 0.3632109
+3_s 3_s 3_s NA 1.000000000 0.3269699 0.3269699 0.0000000
+3_s sink 3_s,2_s,sink 3,2 0.005546433 0.3269699 0.2735782 0.6997260
+sink 2_s sink,2_s 2 0.009998980 0.2735782 0.3994519 0.3365151
+sink 3_s sink,2_s,3_s 2,3 0.005546433 0.2735782 0.3269699 0.6997260
+sink sink sink NA 1.000000000 0.2735782 0.2735782 0.0000000
+")
+
+dci_calc_fx(sum_table.in,lengths.in,all_sections=TRUE)
+
+## Directed sample:
+lengths.di <- lengths.in
+
+sum_table.di<- read.csv(sep=" ", strip.white=TRUE, text= "
+start end path2 barrier_id pathway_pass start_section_length finish_section_length cum_length
+2_s 2_s 2_s NA 1.000000000 0.3994519 0.3994519 0.0000000
+2_s 3_s 2_s,3_s 3u 0.554699885 0.3994519 0.3269699 0.3632109
+2_s sink 2_s,sink 2d 1.000000000 0.3994519 0.2735782 0.3365151
+3_s 2_s 3_s,2_s 3d 1.000000000 0.3269699 0.3994519 0.3632109
+3_s 3_s 3_s NA 1.000000000 0.3269699 0.3269699 0.0000000
+3_s sink 3_s,2_s,sink 3d,2d 1.000000000 0.3269699 0.2735782 0.6997260
+sink 2_s sink,2_s 2u 0.009998980 0.2735782 0.3994519 0.3365151
+sink 3_s sink,2_s,3_s 2u,3u 0.005546433 0.2735782 0.3269699 0.6997260
+sink sink sink NA 1.000000000 0.2735782 0.2735782 0.0000000
+")
+
+
+dci_calc_fx_AG(sum_table.di,lengths.di,all_sections=TRUE)
+
+
+
+
+
+
+
+
+
